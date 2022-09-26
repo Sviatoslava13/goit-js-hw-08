@@ -9,31 +9,38 @@ const refs = {
 refs.form.addEventListener('submit', onFormSubmit),
   refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 
-  const STORAGE_KEY = 'feedback-form-state';
-
-const formData = {};
+const STORAGE_KEY = 'feedback-form-state';
 
 function onTextareaInput(e) {
-  localStorage.setItem(STORAGE_KEY , JSON.stringify(formData));
-
-  formData[e.target.name] = e.target.value;
-  console.log(formData);
+  const formData = {
+    email: refs.email.value,
+    message: refs.message.value,
+  };
+  //formData[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
 function onFormSubmit(e) {
   e.preventDefault();
 
-  console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+  if (refs.email.value !== '' && refs.message.value !== '') {
+    console.log({ email: refs.email.value, message: refs.message.value });
+  }
 
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
 }
-function dataForm() {
-  const dataParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-  if (dataParse) {
-    refs.email.value = dataParse.email;
-    refs.message.value = dataParse.message;
+const load = key => {
+  try {
+    const serializedState = localStorage.getItem(key);
+    return serializedState === null ? undefined : JSON.parse(serializedState);
+  } catch (error) {
+    console.error('Get state error: ', error.message);
   }
+};
+const dataParse = load(STORAGE_KEY);
+
+if (dataParse) {
+  refs.email.value = dataParse.email;
+  refs.message.value = dataParse.message;
 }
-dataForm();
