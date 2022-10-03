@@ -26,6 +26,9 @@ function onFormSubmit(e) {
   if (refs.email.value !== '' && refs.message.value !== '') {
     console.log({ email: refs.email.value, message: refs.message.value });
   }
+   if (refs.email.value  === '' || refs.message.value  === '') {
+   return alert('Please fill in all the fields!');
+  } 
 
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
